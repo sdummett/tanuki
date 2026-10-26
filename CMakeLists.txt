@@ -42,4 +42,5 @@ target_compile_options(${CMAKE_PROJECT_NAME} PRIVATE
     -mfloat-abi=hard
     -ffunction-sections
     -fdata-sections
+    -g3
 )
