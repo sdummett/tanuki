@@ -35,3 +35,52 @@ The following command gives access to a shell connected to the mcu using the uar
 ```sh
 picocom -b 115200 --parity=n --databits=8 --stopbits=1 --flow=n /dev/ttyACM0
 ```
+
+## Comment deboguer le firmware tournant sur un microcontroleur.
+
+Une facon de faire est la suivante.
+
+Premièrement et avant toute chose, n'oublions pas de programmer le microcontroleur avec un firmware ayant été compilé avec des flags de debug.
+
+Commençons par démarrer le serveur OpenOCD avec ST-LINK pour STM32F4.
+Par default, OpenOCD écoute sur `locahost:3333`.
+```sh
+openocd -f interface/stlink.cfg -f target/stm32f4x.cfg
+```
+
+Lançons gdb en parallèle.
+```sh
+arm-none-eabi-gdb <path/to/elf>
+```
+
+Dans gdb, connectons-nous à la cible et chargeons le firmware.
+```gdb
+target remote localhost:3333  # se connecte au serveur OpenOCD
+monitor reset halt            # réinitialise la cible et la maintient à l’arrêt
+load                          # charge le programme sur la cible
+```
+
+Imaginons que nous voulons vérifier la valeur d'une variable.
+Dans le code du firmware, nous pourrions avoir ceci.
+```c++
+volatile uint32_t pc4Raw = (GPIOC->IDR >> 4U) & 1U;
+```
+Ainsi, dans gdb, lorsque nous arriverions à cette instruction, nous afficherions la valeur de cette variable.
+```gdb
+print pc4Raw
+```
+
+Pour "redémarrer le microcontroleur" sans le reprogrammer (et dans gdb).
+```gdb
+monitor reset halt
+continue
+```
+
+Voici un cas simple mais concrèt de l'aide que m'a procuré gdb.
+Ces commandes m'ont été utiles lors du bring-up d'un interrupteur.
+```gdb
+print /x (GPOIC->PUPDR >> 8) & 3
+print /x (GPOIC->MODER >> 8) & 3
+print /x (GPOIC->IDR >> 4) & 1
+```
+Celles-ci m'ont permis de mettre en avant une mauvaise configuration de la broche. En effet, le mode était configuré en sortie au lieu d'entrée.
