@@ -2,14 +2,25 @@
 
 ## Matériel (BOM)
 
-| Quantité | Repère | Désignation | Connexion |
-|---|---|---|---|
-| 1 | U1 | Carte NUCLEO-F401RE | Carte cible |
-| 1 | LED1 | LED rouge 5 mm | Sortie GPIO : PB5 (CN10-29) |
-| 1 | LED2 | LED bleue 5 mm | Sortie GPIO : PC3 (CN7-37) |
-| 1 | LED3 | LED verte 5 mm | Sortie GPIO : PC11 (CN7-2) |
-| 3 | R1-R3 | Résistance 330 Ω | En série, une pour chacune des 3 LED |
-| 3 | SW1-SW3 | Bouton poussoir tactile 6×6 mm | Entrées GPIO : PC4 (CN10-34), PB14 (CN10-28), PB13 (CN10-30) |
+| Quantité | Repère | Désignation |
+|---|---|---|
+| 1 | U1 | Carte NUCLEO-F401RE |
+| 3 | LED1-LED3 | LED rouge 5 mm |
+| 3 | R1-R3 | Résistance 330 Ω |
+| 3 | SW1-SW3 | Bouton poussoir tactile 6×6 mm |
+
+---
+
+## Pinout
+   Signal | Broche | Connecteur | Direction | Actif |
+ |--------|--------|------------|-----------|-------|
+ | LED0 verte (LD2, embarquée) | PA5 | CN10-11 | Sortie | Haut |
+ | LED1 verte externe | PC11 | CN7-2 | Sortie | Haut |
+ | LED2 rouge | PB5 | CN10-29 | Sortie | Haut |
+ | LED3 bleue | PC3 | CN7-37 | Sortie | Haut |
+ | SW1 droite | PC4 | CN10-34 | Entrée (pull-up) | Bas (appuyé) |
+ | SW2 milieu | PB14 | CN10-28 | Entrée (pull-up) | Bas (appuyé) |
+ | SW3 gauche | PB13 | CN10-30 | Entrée (pull-up) | Bas (appuyé) |
 
 ---
 
