@@ -2,12 +2,20 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-static void delay(void)
+volatile uint32_t ms_ticks = 0;
+
+void SysTick_Handler(void) {
+    ms_ticks++;
+}
+
+void systick_init(void) {
+    SysTick_Config(SystemCoreClock / 1000);
+}
+
+static void delayMs(uint32_t ms)
 {
-    for (volatile uint32_t i = 0; i < 500000; i++)
-    {
-        __NOP();
-    }
+    uint32_t start = ms_ticks;
+    while ((ms_ticks - start) < ms);
 }
 
 void initGPIOClocks ()
@@ -121,29 +129,20 @@ void setLedsOn () {
 
 int main(void)
 {
+    SystemCoreClockUpdate();
+    systick_init();
     init();
 
+    uint16_t delay = 500;
     while (1)
     {
-        // volatile uint32_t pc4Raw = (GPIOC->IDR >> 4U) & 1U;
-        if (leftSwitchIsPressed())
-        {
-            setGreenLedOn();
-            delay();
-        }
-        else if (middleSwitchIsPressed())
-        {
-            setRedLedOn();
-            delay();
-        }
-        else if (rightSwitchIsPressed())
-        {
-            setBlueLedOn();
-            delay();
-        }
-        else
-        {
-            setLedsOff();
-        }
+        setGreenLedOn();
+        delayMs(delay);
+        setRedLedOn();
+        delayMs(delay);
+        setBlueLedOn();
+        delayMs(delay);
+        setLedsOff();
+        delayMs(delay);
     }
 }
