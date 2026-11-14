@@ -5,6 +5,7 @@
 | Quantité | Repère | Désignation |
 |---|---|---|
 | 1 | U1 | Carte NUCLEO-F401RE |
+| 1 | U2 | Ecran TFT ST7789 (SPI) |
 | 3 | LED1-LED3 | LED rouge 5 mm |
 | 3 | R1-R3 | Résistance 330 Ω |
 | 3 | SW1-SW3 | Bouton poussoir tactile 6×6 mm |
@@ -12,15 +13,21 @@
 ---
 
 ## Pinout
-   Signal | Broche | Connecteur | Direction | Actif |
- |--------|--------|------------|-----------|-------|
- | LED0 verte (LD2, embarquée) | PA5 | CN10-11 | Sortie | Haut |
- | LED1 verte externe | PC11 | CN7-2 | Sortie | Haut |
- | LED2 rouge | PB5 | CN10-29 | Sortie | Haut |
- | LED3 bleue | PC3 | CN7-37 | Sortie | Haut |
- | SW1 droite | PC4 | CN10-34 | Entrée (pull-up) | Bas (appuyé) |
- | SW2 milieu | PB14 | CN10-28 | Entrée (pull-up) | Bas (appuyé) |
- | SW3 gauche | PB13 | CN10-30 | Entrée (pull-up) | Bas (appuyé) |
+Signal | Broche | Connecteur | Direction | Actif |
+|---|---|---|---|---|
+| LED0 verte (LD2, embarquée) | PA5 | CN10-11 | Sortie | Haut |
+| LED1 verte externe | PC11 | CN7-2 | Sortie | Haut |
+| LED2 rouge | PB5 | CN10-29 | Sortie | Haut |
+| LED3 bleue | PC3 | CN7-37 | Sortie | Haut |
+| SW1 droite | PC4 | CN10-34 | Entrée (pull-up) | Bas (appuyé) |
+| SW2 milieu | PB14 | CN10-28 | Entrée (pull-up) | Bas (appuyé) |
+| SW3 gauche | PB13 | CN10-30 | Entrée (pull-up) | Bas (appuyé) |
+| ST7789 V+ | 5V | CN7-18 | Alimentation | - |
+| ST7789 SCK | PA5 | CN10-11 | Sortie | - |
+| ST7789 MOSI | PA7 | CN10-15 | Sortie | - |
+| ST7789 CS | PB6 | CN10-17 | Sortie | Bas |
+| ST7789 RST | PC7 | CN10-19 | Sortie | Bas |
+| ST7789 DC | PA9 | CN10-21 | Sortie | - |
 
 ---
 
