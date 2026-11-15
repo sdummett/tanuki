@@ -2,6 +2,15 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define CS_LOW()    (GPIOB->BSRR = GPIO_BSRR_BR_6)
+#define CS_HIGH()   (GPIOB->BSRR = GPIO_BSRR_BS_6)
+
+#define DC_LOW()    (GPIOA->BSRR = GPIO_BSRR_BR_9)
+#define DC_HIGH()   (GPIOA->BSRR = GPIO_BSRR_BS_9)
+
+#define RST_LOW()   (GPIOC->BSRR = GPIO_BSRR_BR_7)
+#define RST_HIGH()  (GPIOC->BSRR = GPIO_BSRR_BS_7)
+
 volatile uint32_t ms_ticks = 0;
 
 void SysTick_Handler(void) {
@@ -65,11 +74,36 @@ void initGPIOSwitch ()
     GPIOB->PUPDR |= GPIO_PUPDR_PUPD13_0; // pull-up (01)
 }
 
-void init ()
+void initGPIO ()
 {
     initGPIOClocks ();
     initGPIOLeds();
     initGPIOSwitch();
+
+    // Mettre les sorties CS/DC/RST a leur etat inactif avant de les configurer.
+    // Cela evitera de possibles glitchs.
+    CS_HIGH();
+    DC_HIGH();
+    RST_HIGH();
+
+    // PB6=CS, PC7=RST et PA9=DC en sortie : MODER = 01
+    GPIOB->MODER &= ~GPIO_MODER_MODER6;
+    GPIOB->MODER |=  GPIO_MODER_MODER6_0;
+
+    GPIOC->MODER &= ~GPIO_MODER_MODER7;
+    GPIOC->MODER |=  GPIO_MODER_MODER7_0;
+
+    GPIOA->MODER &= ~GPIO_MODER_MODER9;
+    GPIOA->MODER |=  GPIO_MODER_MODER9_0;
+
+    // PA5=SCK et PA7=MOSI en fonction alternative : MODER = 10
+    GPIOA->MODER &= ~(GPIO_MODER_MODER5 | GPIO_MODER_MODER7);
+    GPIOA->MODER |=  (GPIO_MODER_MODER5_1 | GPIO_MODER_MODER7_1);
+
+    // AF5 sur PA5 et PA7 : AF5 = 0101
+    GPIOA->AFR[0] &= ~(GPIO_AFRL_AFSEL5 | GPIO_AFRL_AFSEL7);
+    GPIOA->AFR[0] |=  GPIO_AFRL_AFSEL5_0 | GPIO_AFRL_AFSEL5_2
+                    | GPIO_AFRL_AFSEL7_0 | GPIO_AFRL_AFSEL7_2;
 }
 
 void setGreenLedOn ()
@@ -131,7 +165,7 @@ int main(void)
 {
     SystemCoreClockUpdate();
     systick_init();
-    init();
+    initGPIO();
 
     uint16_t delay = 500;
     while (1)
