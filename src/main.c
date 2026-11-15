@@ -31,36 +31,36 @@ void initGPIOClocks ()
 void initGPIOLeds ()
 {
     // PA5 (pin 11) = output = onboard green led
-    GPIOA->MODER &= ~(GPIO_MODER_MODE5);
-    GPIOA->MODER |= (GPIO_MODER_MODE5_0);
+    GPIOA->MODER &= ~(GPIO_MODER_MODER5);
+    GPIOA->MODER |= (GPIO_MODER_MODER5_0);
 
     // PB5 (pin 29) -> output -> red led
-    GPIOB->MODER &= ~(GPIO_MODER_MODE5);
-    GPIOB->MODER |= (GPIO_MODER_MODE5_0);
+    GPIOB->MODER &= ~(GPIO_MODER_MODER5);
+    GPIOB->MODER |= (GPIO_MODER_MODER5_0);
 
     // PC3 (pin 37) -> output -> blue ed
-    GPIOC->MODER &= ~(GPIO_MODER_MODE3);
-    GPIOC->MODER |= (GPIO_MODER_MODE3_0);
+    GPIOC->MODER &= ~(GPIO_MODER_MODER3);
+    GPIOC->MODER |= (GPIO_MODER_MODER3_0);
 
     // PC11 (pin 2) -> output -> green led
-    GPIOC->MODER &= ~(GPIO_MODER_MODE11);
-    GPIOC->MODER |= (GPIO_MODER_MODE11_0);
+    GPIOC->MODER &= ~(GPIO_MODER_MODER11);
+    GPIOC->MODER |= (GPIO_MODER_MODER11_0);
 }
 
 void initGPIOSwitch ()
 {
     // PC4 (pin 34) -> input -> right switch
-    GPIOC->MODER &= ~(GPIO_MODER_MODE4);
+    GPIOC->MODER &= ~(GPIO_MODER_MODER4);
     GPIOC->PUPDR &= ~GPIO_PUPDR_PUPD4; // clear les bits du pull
     GPIOC->PUPDR |= GPIO_PUPDR_PUPD4_0; // pull-up (01
 
     // PB14 (pin 28) -> input -> middle switch
-    GPIOB->MODER &= ~(GPIO_MODER_MODE14);
+    GPIOB->MODER &= ~(GPIO_MODER_MODER14);
     GPIOB->PUPDR &= ~GPIO_PUPDR_PUPD14; // clear les bits du pull
     GPIOB->PUPDR |= GPIO_PUPDR_PUPD14_0; // pull-up (01)
 
     // PB13 (pin 30) -> input -> left switch
-    GPIOB->MODER &= ~(GPIO_MODER_MODE13);
+    GPIOB->MODER &= ~(GPIO_MODER_MODER13);
     GPIOB->PUPDR &= ~GPIO_PUPDR_PUPD13; // clear les bits du pull
     GPIOB->PUPDR |= GPIO_PUPDR_PUPD13_0; // pull-up (01)
 }
