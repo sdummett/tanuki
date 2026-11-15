@@ -106,6 +106,19 @@ void initGPIO ()
                     | GPIO_AFRL_AFSEL7_0 | GPIO_AFRL_AFSEL7_2;
 }
 
+static void initSPI1(void)
+{
+    RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
+
+    // Maitre, mode 0, 8 bits, NSS logiciel, frequence PCLK2/16.
+    SPI1->CR1 = SPI_CR1_MSTR
+              | SPI_CR1_SSM
+              | SPI_CR1_SSI
+              | SPI_CR1_BR_0
+              | SPI_CR1_BR_1;
+    SPI1->CR1 |= SPI_CR1_SPE;
+}
+
 void setGreenLedOn ()
 {
     GPIOC->BSRR = GPIO_BSRR_BS11;
@@ -166,6 +179,7 @@ int main(void)
     SystemCoreClockUpdate();
     systick_init();
     initGPIO();
+    initSPI1();
 
     uint16_t delay = 500;
     while (1)
