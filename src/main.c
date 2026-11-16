@@ -26,11 +26,11 @@
 #define ST7789_CMD_RASET 0x2BU
 #define ST7789_CMD_RAMWR 0x2CU
 
-#define ST7789_MADCTL_MY   0x80U
-#define ST7789_MADCTL_MX   0x40U
-#define ST7789_MADCTL_MV   0x20U
-#define ST7789_MADCTL_RGB  0x00U
-
+#define ST7789_MADCTL_MY        0x80U
+#define ST7789_MADCTL_MX        0x40U
+#define ST7789_MADCTL_MV        0x20U
+#define ST7789_MADCTL_RGB       0x00U
+#define ST7789_MADCTL_NORMAL    0x00U
 volatile uint32_t ms_ticks = 0;
 
 void SysTick_Handler(void) {
@@ -178,10 +178,36 @@ static void tftCommandData(uint8_t cmd, const uint8_t *data, uint32_t length)
     CS_HIGH();
 }
 
+#define TFT_ROWSTART 80U
+
+typedef enum {
+    TFT_ROTATION_0   = 0U,
+    TFT_ROTATION_90  = 1U,
+    TFT_ROTATION_180 = 2U,
+    TFT_ROTATION_270 = 3U,
+} TftRotation_t;
+
+static TftRotation_t tftRotation = TFT_ROTATION_270;
+
+static uint8_t tftMadctl(TftRotation_t rotation)
+{
+    switch (rotation) {
+    case TFT_ROTATION_90:
+        return ST7789_MADCTL_MY | ST7789_MADCTL_MV;
+    case TFT_ROTATION_270:
+        return ST7789_MADCTL_MX | ST7789_MADCTL_MV;
+    case TFT_ROTATION_180:
+        return ST7789_MADCTL_NORMAL;
+    case TFT_ROTATION_0:
+    default:
+        return ST7789_MADCTL_MY | ST7789_MADCTL_MX;
+    }
+}
+
 static void initST7789(void)
 {
     const uint8_t pixel_format = 0x55U; // RGB565
-    const uint8_t madctl = ST7789_MADCTL_MY | ST7789_MADCTL_MX | ST7789_MADCTL_RGB;
+    const uint8_t madctl = tftMadctl(tftRotation) | ST7789_MADCTL_RGB;
 
     RST_LOW();
     delayMs(10U);
@@ -204,17 +230,6 @@ static void initST7789(void)
     tftCommand(ST7789_CMD_DISPON);
     delayMs(20U);
 }
-
-#define TFT_ROWSTART 80U
-
-typedef enum {
-    TFT_ROTATION_0   = 0U,
-    TFT_ROTATION_90  = 1U,
-    TFT_ROTATION_180 = 2U,
-    TFT_ROTATION_270 = 3U,
-} TftRotation_t;
-
-static TftRotation_t tftRotation = TFT_ROTATION_0;
 
 static void tftSetWindow(void)
 {
@@ -259,7 +274,6 @@ static void tftSetWindow(void)
     tftCommandData(ST7789_CMD_CASET, columns, sizeof(columns));
     tftCommandData(ST7789_CMD_RASET, rows, sizeof(rows));
 }
-
 
 static void tftDrawImage(const uint16_t *pixels)
 {
