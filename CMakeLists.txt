@@ -22,6 +22,12 @@ add_executable(${CMAKE_PROJECT_NAME})
 
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     src/main.c
+    src/gpio.c
+    src/leds.c
+    src/spi.c
+    src/st7789.c
+    src/switches.c
+    src/systick.c
     startup_stm32f401xe.s
     Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c
 )
