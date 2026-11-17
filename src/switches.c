@@ -1,7 +1,7 @@
 #include "stm32f401xe.h"
 #include "switches.h"
 
-void initGPIOSwitch(void)
+void switches_init(void)
 {
     // PC4 (pin 34) -> input -> right switch
     GPIOC->MODER &= ~(GPIO_MODER_MODER4);
@@ -19,17 +19,17 @@ void initGPIOSwitch(void)
     GPIOB->PUPDR |= GPIO_PUPDR_PUPD13_0;
 }
 
-bool rightSwitchIsPressed(void)
+bool switch_right_is_pressed(void)
 {
     return (GPIOC->IDR & GPIO_IDR_ID4) == 0U;
 }
 
-bool middleSwitchIsPressed(void)
+bool switch_middle_is_pressed(void)
 {
     return (GPIOB->IDR & GPIO_IDR_ID14) == 0U;
 }
 
-bool leftSwitchIsPressed(void)
+bool switch_left_is_pressed(void)
 {
     return (GPIOB->IDR & GPIO_IDR_ID13) == 0U;
 }

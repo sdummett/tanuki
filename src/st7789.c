@@ -37,11 +37,11 @@ typedef enum {
     TFT_ROTATION_90  = 1U,
     TFT_ROTATION_180 = 2U,
     TFT_ROTATION_270 = 3U,
-} TftRotation_t;
+} st7789_rotation_t;
 
-static TftRotation_t tftRotation = TFT_ROTATION_270;
+static st7789_rotation_t st7789_rotation = TFT_ROTATION_270;
 
-void initTftGPIO(void)
+void st7789_gpio_init(void)
 {
     // Mettre les sorties CS/DC/RST a leur etat inactif avant de les configurer.
     // Cela evitera de possibles glitchs.
@@ -60,29 +60,29 @@ void initTftGPIO(void)
     GPIOA->MODER |=  GPIO_MODER_MODER9_0;
 }
 
-static void tftCommand(uint8_t cmd)
+static void st7789_write_command(uint8_t cmd)
 {
     CS_LOW();
     DC_LOW();
-    writeSPI1(cmd);
+    spi1_write_byte(cmd);
     CS_HIGH();
 }
 
-static void tftCommandData(uint8_t cmd, const uint8_t *data, uint32_t length)
+static void st7789_write_command_data(uint8_t cmd, const uint8_t *data, uint32_t length)
 {
     CS_LOW();
     DC_LOW();
-    writeSPI1(cmd);
+    spi1_write_byte(cmd);
 
     DC_HIGH();
     for (uint32_t i = 0U; i < length; i++) {
-        writeSPI1(data[i]);
+        spi1_write_byte(data[i]);
     }
 
     CS_HIGH();
 }
 
-static uint8_t tftMadctl(TftRotation_t rotation)
+static uint8_t st7789_madctl_for_rotation(st7789_rotation_t rotation)
 {
     switch (rotation) {
     case TFT_ROTATION_90:
@@ -97,39 +97,39 @@ static uint8_t tftMadctl(TftRotation_t rotation)
     }
 }
 
-void initST7789(void)
+void st7789_init(void)
 {
     const uint8_t pixel_format = 0x55U; // RGB565
-    const uint8_t madctl = tftMadctl(tftRotation) | ST7789_MADCTL_RGB;
+    const uint8_t madctl = st7789_madctl_for_rotation(st7789_rotation) | ST7789_MADCTL_RGB;
 
     RST_LOW();
-    delayMs(10U);
+    systick_delay_ms(10U);
     RST_HIGH();
-    delayMs(120U);
+    systick_delay_ms(120U);
 
-    tftCommand(ST7789_CMD_SWRESET);
-    delayMs(150U);
+    st7789_write_command(ST7789_CMD_SWRESET);
+    systick_delay_ms(150U);
 
-    tftCommand(ST7789_CMD_SLPOUT);
-    delayMs(120U);
+    st7789_write_command(ST7789_CMD_SLPOUT);
+    systick_delay_ms(120U);
 
-    tftCommandData(ST7789_CMD_COLMOD, &pixel_format, 1U);
-    delayMs(10U);
+    st7789_write_command_data(ST7789_CMD_COLMOD, &pixel_format, 1U);
+    systick_delay_ms(10U);
 
-    tftCommandData(ST7789_CMD_MADCTL, &madctl, 1U);
-    tftCommand(ST7789_CMD_INVON);
-    tftCommand(ST7789_CMD_NORON);
+    st7789_write_command_data(ST7789_CMD_MADCTL, &madctl, 1U);
+    st7789_write_command(ST7789_CMD_INVON);
+    st7789_write_command(ST7789_CMD_NORON);
 
-    tftCommand(ST7789_CMD_DISPON);
-    delayMs(20U);
+    st7789_write_command(ST7789_CMD_DISPON);
+    systick_delay_ms(20U);
 }
 
-static void tftSetWindow(void)
+static void st7789_set_window(void)
 {
     uint16_t x_start = 0U;
     uint16_t y_start = 0U;
 
-    switch (tftRotation) {
+    switch (st7789_rotation) {
     case TFT_ROTATION_90:
         x_start = TFT_ROWSTART;
         break;
@@ -158,23 +158,23 @@ static void tftSetWindow(void)
         (uint8_t)(y_end >> 8),   (uint8_t)y_end
     };
 
-    tftCommandData(ST7789_CMD_CASET, columns, sizeof(columns));
-    tftCommandData(ST7789_CMD_RASET, rows, sizeof(rows));
+    st7789_write_command_data(ST7789_CMD_CASET, columns, sizeof(columns));
+    st7789_write_command_data(ST7789_CMD_RASET, rows, sizeof(rows));
 }
 
-void tftDrawImage(const uint16_t *pixels)
+void st7789_draw_image(const uint16_t *pixels)
 {
-    tftSetWindow();
+    st7789_set_window();
 
     CS_LOW();
     DC_LOW();
-    writeSPI1(ST7789_CMD_RAMWR);
+    spi1_write_byte(ST7789_CMD_RAMWR);
 
     DC_HIGH();
     for (uint32_t i = 0U; i < TFT_WIDTH * TFT_HEIGHT; i++) {
         uint16_t pixel = pixels[i];
-        writeSPI1((uint8_t)(pixel >> 8)); // Octet fort
-        writeSPI1((uint8_t)pixel); // Octet faible
+        spi1_write_byte((uint8_t)(pixel >> 8)); // Octet fort
+        spi1_write_byte((uint8_t)pixel); // Octet faible
     }
 
     CS_HIGH();

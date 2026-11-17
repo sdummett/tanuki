@@ -4,6 +4,6 @@
 #include <stdint.h>
 
 void systick_init(void);
-void delayMs(uint32_t ms);
+void systick_delay_ms(uint32_t ms);
 
 #endif // SYSTICK_H

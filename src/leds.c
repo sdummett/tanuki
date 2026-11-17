@@ -1,7 +1,7 @@
 #include "stm32f401xe.h"
 #include "leds.h"
 
-void initGPIOLeds(void)
+void leds_init(void)
 {
     // PA5 (pin 11) = output = onboard green led
     GPIOA->MODER &= ~(GPIO_MODER_MODER5);
@@ -20,48 +20,48 @@ void initGPIOLeds(void)
     GPIOC->MODER |= (GPIO_MODER_MODER11_0);
 }
 
-void setGreenLedOn(void)
+void led_green_on(void)
 {
     GPIOC->BSRR = GPIO_BSRR_BS11;
 }
 
-void setRedLedOn(void)
+void led_red_on(void)
 {
     GPIOB->BSRR = GPIO_BSRR_BS5;
 }
 
-void setBlueLedOn(void)
+void led_blue_on(void)
 {
     GPIOC->BSRR = GPIO_BSRR_BS3;
 }
 
-void setGreenLedOff(void)
+void led_green_off(void)
 {
     GPIOC->BSRR = GPIO_BSRR_BR11;
 }
 
-void setRedLedOff(void)
+void led_red_off(void)
 {
     GPIOB->BSRR = GPIO_BSRR_BR5;
 }
 
-void setBlueLedOff(void)
+void led_blue_off(void)
 {
     GPIOC->BSRR = GPIO_BSRR_BR3;
 }
 
-void setLedsOff(void)
+void leds_all_off(void)
 {
     GPIOA->BSRR = GPIO_BSRR_BR5; // onboard LD2
-    setGreenLedOff();
-    setRedLedOff();
-    setBlueLedOff();
+    led_green_off();
+    led_red_off();
+    led_blue_off();
 }
 
-void setLedsOn(void)
+void leds_all_on(void)
 {
     GPIOA->BSRR = GPIO_BSRR_BS5; // onboard LD2
-    setGreenLedOn();
-    setRedLedOn();
-    setBlueLedOn();
+    led_green_on();
+    led_red_on();
+    led_blue_on();
 }

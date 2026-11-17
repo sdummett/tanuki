@@ -14,7 +14,7 @@ void systick_init(void)
     SysTick_Config(SystemCoreClock / 1000);
 }
 
-void delayMs(uint32_t ms)
+void systick_delay_ms(uint32_t ms)
 {
     uint32_t start = ms_ticks;
     while ((ms_ticks - start) < ms);

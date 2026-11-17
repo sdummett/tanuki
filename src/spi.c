@@ -1,7 +1,7 @@
 #include "stm32f401xe.h"
 #include "spi.h"
 
-static void initSPI1Pins(void)
+static void spi1_pins_init(void)
 {
     // PA5=SCK et PA7=MOSI en fonction alternative : MODER = 10
     GPIOA->MODER &= ~(GPIO_MODER_MODER5 | GPIO_MODER_MODER7);
@@ -13,9 +13,9 @@ static void initSPI1Pins(void)
                     | GPIO_AFRL_AFSEL7_0 | GPIO_AFRL_AFSEL7_2;
 }
 
-void initSPI1(void)
+void spi1_init(void)
 {
-    initSPI1Pins();
+    spi1_pins_init();
 
     RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
 
@@ -28,7 +28,7 @@ void initSPI1(void)
     SPI1->CR1 |= SPI_CR1_SPE;
 }
 
-void writeSPI1(uint8_t byte)
+void spi1_write_byte(uint8_t byte)
 {
     // Attente de la disponibilité du registre d'émission
     while ((SPI1->SR & SPI_SR_TXE) == 0U) {

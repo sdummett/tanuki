@@ -1,17 +1,17 @@
 #ifndef LEDS_H
 #define LEDS_H
 
-void initGPIOLeds(void);
+void leds_init(void);
 
-void setGreenLedOn(void);
-void setRedLedOn(void);
-void setBlueLedOn(void);
+void led_green_on(void);
+void led_red_on(void);
+void led_blue_on(void);
 
-void setGreenLedOff(void);
-void setRedLedOff(void);
-void setBlueLedOff(void);
+void led_green_off(void);
+void led_red_off(void);
+void led_blue_off(void);
 
-void setLedsOn(void);
-void setLedsOff(void);
+void leds_all_on(void);
+void leds_all_off(void);
 
 #endif // LEDS_H

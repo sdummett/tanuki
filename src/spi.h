@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-void initSPI1(void); // broches PA5/PA7 + peripherique SPI1
-void writeSPI1(uint8_t byte);
+void spi1_init(void);
+void spi1_write_byte(uint8_t byte);
 
 #endif // SPI_H
