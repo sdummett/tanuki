@@ -112,8 +112,8 @@ continue
 Voici un cas simple mais concrèt de l'aide que m'a procuré gdb.
 Ces commandes m'ont été utiles lors du bring-up d'un interrupteur.
 ```gdb
-print /x (GPOIC->PUPDR >> 8) & 3
-print /x (GPOIC->MODER >> 8) & 3
-print /x (GPOIC->IDR >> 4) & 1
+print /x (GPIOC->PUPDR >> 8) & 3
+print /x (GPIOC->MODER >> 8) & 3
+print /x (GPIOC->IDR >> 4) & 1
 ```
 Celles-ci m'ont permis de mettre en avant une mauvaise configuration de la broche. En effet, le mode était configuré en sortie au lieu d'entrée.
